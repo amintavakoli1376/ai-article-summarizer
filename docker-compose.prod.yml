@@ -1,5 +1,3 @@
-version: '3.9'
-
 name: article-summarizer
 
 x-logging: &default-logging
