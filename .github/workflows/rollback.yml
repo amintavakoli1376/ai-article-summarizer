@@ -1,0 +1,33 @@
+name: Rollback production
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: Reason for rollback
+        required: true
+        default: Production issue detected
+
+env:
+  SSH_HOST: ${{ secrets.DEPLOY_HOST }}
+  SSH_USER: ${{ secrets.DEPLOY_USER }}
+  SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+
+jobs:
+  rollback:
+    name: Rollback to previous release
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Execute rollback on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ env.SSH_HOST }}
+          username: ${{ env.SSH_USER }}
+          key: ${{ env.SSH_KEY }}
+          script: |
+            chmod +x /opt/article-summarizer/.github/scripts/rollback.sh
+            /opt/article-summarizer/.github/scripts/rollback.sh "${{ github.event.inputs.reason }}"
+          script_stop: true
