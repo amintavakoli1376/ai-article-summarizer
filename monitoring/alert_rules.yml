@@ -1,0 +1,29 @@
+groups:
+  - name: article-summarizer-alerts
+    rules:
+      - alert: HighCpuUsage
+        expr: rate(container_cpu_usage_seconds_total{name="summarizer-api"}[2m]) > 0.8
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High CPU usage for API container"
+          description: "API container CPU usage is above 80% for more than 2 minutes."
+
+      - alert: ApiErrorRateHigh
+        expr: rate(http_requests_total{status!~"2.."}[5m]) > 0.1
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API error rate"
+          description: "API error rate exceeded 10% in the last 5 minutes."
+
+      - alert: CeleryTaskFailureRateHigh
+        expr: increase(celery_task_failures_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Celery task failure detected"
+          description: "One or more Celery tasks failed in the last 5 minutes."

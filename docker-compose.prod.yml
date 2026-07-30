@@ -97,11 +97,11 @@ services:
 
   # ─── FastAPI Backend ────────────────────────────────────────────
   api:
+    image: ${IMAGE_REGISTRY:-ghcr.io}/${IMAGE_NAME:-amintavakoli1376/article-summarizer}:latest
     build:
       context: .
       dockerfile: Dockerfile.api
       target: production
-    container_name: summarizer-api
     restart: unless-stopped
     logging: *default-logging
     depends_on:
@@ -132,6 +132,13 @@ services:
     networks:
       - summarizer-net
     deploy:
+      replicas: 2
+      update_config:
+        order: start-first
+        parallelism: 1
+        delay: 5s
+        failure_action: rollback
+        monitor: 30s
       resources:
         limits:
           memory: 1G

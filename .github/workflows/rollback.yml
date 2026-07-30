@@ -28,6 +28,6 @@ jobs:
           username: ${{ env.SSH_USER }}
           key: ${{ env.SSH_KEY }}
           script: |
-            chmod +x /opt/article-summarizer/.github/scripts/rollback.sh
-            /opt/article-summarizer/.github/scripts/rollback.sh "${{ github.event.inputs.reason }}"
+            chmod +x /opt/article-summarizer/scripts/rollback.sh
+            /opt/article-summarizer/scripts/rollback.sh "${{ github.event.inputs.reason }}"
           script_stop: true
